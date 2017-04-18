@@ -15,13 +15,13 @@ using IronScheme.Runtime;
 using IronScheme.Scripting;
 
 public static class CalculatorLanguage {
-	public static Racr.Specification CL;
+	public static readonly Racr.Specification CL;
 
 	static CalculatorLanguage() {
 		CL = new Racr.Specification();
 
 		// abstract syntax tree
-		CL.AstRule("Calculator->Definition*<Definitions-Expression");
+		CL.AstRule("Calculator->Definition*-Expression");
 		CL.AstRule("Definition->name-value");
 		CL.AstRule("Expression->");
 		CL.AstRule("BinaryExpression:Expression->Expression<Op1-Expression<Op2");
@@ -57,7 +57,7 @@ public static class CalculatorLanguage {
 	}
 
 	public static Racr.AstNode GetDefinitions(this Racr.AstNode n) {
-		return n.Child("Definitions");
+		return n.Child("Definition*");
 	}
 
 	public static double Eval(this Racr.AstNode n) {
@@ -101,7 +101,7 @@ public static class CalculatorLanguage {
 }
 
 public static class CalculatorProfiler {
-	public static Racr.Specification CL = CalculatorLanguage.CL;
+	private static readonly Racr.Specification CL = CalculatorLanguage.CL;
 
 	static CalculatorProfiler() {
 		"(import (calculator-scheme main))".Eval();
@@ -206,7 +206,7 @@ public static class CalculatorProfiler {
 	}
 
 	[Test] public void n1c1r0()		{ test(1,	1,	0);	}
-	[Test] public void n1c1r10()		{ test(1,	1,	10)	}
+	[Test] public void n1c1r10()		{ test(1,	1,	10);	}
 	[Test] public void n10c1r0()		{ test(10,	1,	0);	}
 	[Test] public void n10c1r10()		{ test(10,	1,	10);	}
 	[Test] public void n10c10r10()		{ test(10,	10,	10);	}
